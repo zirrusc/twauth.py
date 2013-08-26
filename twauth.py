@@ -3,6 +3,7 @@
 import tweepy
 import os
 import sys
+import pickle
 
 # Get Access Key and Access Secret of Twitter API using tweepy, and write them at ordered file.
 class twauth:
@@ -24,16 +25,19 @@ class twauth:
 	def auth(self, path = ''):
 		if path == '':
 			path = 'access-token'
-		if os.file.exists(path):
-			f = open(path, 'r')
-			r = { 'consumer-key': f[0], 'consumer-secret': f[1], 'access-key': f[2], 'access-secret': f[3] }
-			f.close()
-		
+		if os.path.isfile(path):
+			# open file
+			with open(path, 'rb') as f:
+				r = pickle.load(f)
+			#f = open(path, 'r')
+			#lines = f.readlines()
+			#r = { 'consumer-key': lines[0], 'consumer-secret': lines[1], 'access-key': lines[2], 'access-secret': lines[3] }
+			#f.close()
 			auth = tweepy.OAuthHandler(r['consumer-key'], r['consumer-secret'])
 			auth.set_access_token(r['access-key'], r['access-secret'])
 			return auth
 		else:
-			print '\'%s\': file not found.' % path
+			raise '\'%s\': file not found.' % path
 		
 	# Get and storage Access Key and Access Secret of Twitter API.
 	@classmethod
@@ -51,8 +55,11 @@ class twauth:
 		authUrl = auth.get_authorization_url()
 
 		print 'go to: ' + authUrl
-		pin = raw_input('pin: ').strip()
-
+		pin = raw_input('pin (or c[ancel]): ').strip()
+		pinc = pin.lower()
+		if pinc == 'c' or pinc == 'cancel':
+			return 1
+		
 		auth.get_access_token(pin)
 		accessKey = auth.access_token.key
 		accessSecret = auth.access_token.secret
@@ -60,21 +67,6 @@ class twauth:
 		print 'access key: %s' % accessKey
 		print 'access secret: %s' % accessSecret
 
-		path = self.detectPath(savePath)
-		if path == '':
-			return 1
-	
-		# Open file
-		f = open(path, 'w')
-		f.write(conKey + '\n')
-		f.write(conSecret + '\n')
-		f.write(accessKey + '\n')
-		f.write(accessSecret + '\n')
-		f.close()
-		return 0
-	
-	@classmethod
-	def detectPath(self, savePath):
 		if (savePath == ''):
 			path = raw_input('save to [%s](\'c\' to cancel): ' % self.defaultPath)
 		else:
@@ -84,16 +76,20 @@ class twauth:
 			path = self.defaultPath
 		if path == 'c':
 			return 1
-		if os.path.exists(path):
-			r = ''
-			while True:
-				r = raw_input('%s has been exists. overwritten? (Y[es]/n[o]): ' % path)
-				isow = r.lower()
-				if isow == 'n' or isow == 'no':
-					return ''
-				if isow == 'y' or isow == 'yes' or isow == '':
-					return path
-		return path
+	
+		# Open file
+		with open(path, 'wb') as f:
+			pickle.dump( { 'consumer-key': conKey, 'consumer-secret': conSecret, 
+				'access-key': accessKey, 'access-secret': accessSecret }, f)
+				
+		#f = open(path, 'w')
+		#f.write(conKey + '\n')
+		#f.write(conSecret + '\n')
+		#f.write(accessKey + '\n')
+		#f.write(accessSecret + '\n')
+		#f.close()
+		
+		return 0	
 
 if '__main__' in __name__:
 	arguments_missing = '\
