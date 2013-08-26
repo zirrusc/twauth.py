@@ -1,0 +1,30 @@
+twauth.py
+zirrusc 2013
+Get Access Key and Access Secret of Twitter API using tweepy, and write them at ordered file.
+
+Using:
+    python twauth.py help
+        Show this help message.
+    
+    python twauth.py [consumer-key consumer-secret [path]]
+        Get and storage Access Key and Access Secret of Twitter API.
+        consumer-key:
+            A Consumer Key authenticating the application.
+        consumer-secret
+            A consumer secret authenticating the application.
+        path
+            A file name writing access token.
+Functions:
+    def auth(path = '')
+        Authenticate the application from storaged access token.
+        path
+            A file name storaged access token.
+    
+    def get(consumerKey = '', consumerSecret = '', savePath = '')
+        Get and storage Access Key and Access Secret of Twitter API.
+        consumerKey
+            A Consumer Key authenticating the application.
+        consumerSecret
+            A consumer secret authenticating the application.
+        savePath
+            A file name writing access token.
