@@ -3,7 +3,7 @@ twauth.py
 [zirrusc](http://zirrusc.net) 2013
 
 
-Get Access Key and Access Secret of Twitter API using Tweepy, and write them at ordered file. You don't need authenticate over again.
+Get Access Key and Access Secret of Twitter API using Tweepy, and write them at ordered file. You don't need authentication over again.
 
 #Requirement
 * Python 2.7 (Python 3 family is not supported because of Tweepy requirement)
